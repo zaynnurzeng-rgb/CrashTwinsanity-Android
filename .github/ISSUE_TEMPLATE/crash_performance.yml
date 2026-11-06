@@ -68,7 +68,7 @@ body:
     id: graphics
     attributes:
       label: Graphics settings
-      description: Render resolution, max frame rate, V-Sync, anisotropic filtering, anti-aliasing and screen filter, or paste `shaolinmonks.toml`.
+      description: Render resolution, max frame rate, V-Sync, anisotropic filtering, anti-aliasing and screen filter, or paste `twinsanity.toml`.
       render: toml
 
   - type: textarea
@@ -76,7 +76,7 @@ body:
     attributes:
       label: Log
       description: |
-        Attach `shaolinmonks.log` from `Android/data/com.racas.shaolinmonks/files/logs` (drag it here).
+        Attach `twinsanity.log` from `Android/data/com.port.crashtwinsanity/files/logs` (drag it here).
         For a crash, an `adb logcat` taken right after it happens helps a lot.
       render: text
     validations:

@@ -263,11 +263,9 @@ constexpr Row kGraphicsRows[] = {
     {Kind::Heading, -1, "DISPLAY"},
     {Kind::Value, kRenderResolution, "RENDER RESOLUTION"},
     {Kind::Value, kAspectRatio, "ASPECT RATIO"},
-    {Kind::Value, kUltrawide, "ULTRAWIDE"},
     {Kind::Heading, -1, "PERFORMANCE"},
     {Kind::Value, kVsync, "VERTICAL SYNC"},
     {Kind::Value, kMaxFps, "MAX FRAME RATE"},
-    {Kind::Value, kFrameSkip, "FRAME SKIP"},
     {Kind::Value, kFpsCounter, "FPS COUNTER"},
     {Kind::Value, kFpsPosition, "FPS COUNTER POSITION"},
     {Kind::Value, kFpsUsage, "SHOW CPU / GPU USAGE"},
@@ -290,21 +288,11 @@ constexpr Row kTouchRows[] = {
     {Kind::Link, kTouchEdit, "EDIT CONTROLS POSITION"},
 };
 
-// LANGUAGE is the settings panel's: the game takes its own from the console's language
+// LANGUAGE is the settings panel's: the game takes its own from the console's language. Shaolin Monks' cheat rows
+// are gone: their addresses do not exist in Crash Twinsanity (src/game/cheats.cpp).
 constexpr Row kGeneralRows[] = {
     {Kind::Value, kLanguage, "LANGUAGE"},
     {Kind::Value, kAudioOutput, "AUDIO OUTPUT"},
-    {Kind::Heading, -1, "CHEATS"},
-    {Kind::Value, kUnlockCharacters, "UNLOCK ALL CHARACTERS"},
-    {Kind::Value, kUnlockExtras, "UNLOCK ALL KONTENT"},
-    {Kind::Value, kSkipCutscenes, "SKIP ANY CUTSCENE"},
-    {Kind::Value, kGodMode, "GOD MODE"},
-    {Kind::Value, kOneHitKill, "ONE-HIT KILL"},
-    {Kind::Value, kMaxHealth, "MAX HEALTH UPGRADES"},
-    {Kind::Value, kInfiniteFatality, "INFINITE MANA"},
-    {Kind::Value, kInfiniteEnergy, "INFINITE ENERGY"},
-    {Kind::Value, kMaxMana, "MAX MANA"},
-    {Kind::Value, kMaxExperience, "MAX EXPERIENCE"},
 };
 
 // the credits' names, an info row's id; as they are, untranslated

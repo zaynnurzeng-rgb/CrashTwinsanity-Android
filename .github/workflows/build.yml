@@ -1,10 +1,11 @@
-# Builds the APK; for each v* tag, also publishes a release. Run by hand (Actions > Build > Run workflow), it only
-# uploads the APK as an artifact. The recompiler needs default.xbe: ci/default.xbe.enc, decrypted with the XBE_KEY
-# secret. To make it, from Git Bash at the repo root:
-#   openssl enc -aes-256-cbc -md sha256 -pbkdf2 -iter 200000 -salt -in assets/default.xbe -out ci/default.xbe.enc -pass pass:<key>
+# Builds Crash Twinsanity for Android. For each v* tag it also publishes a release; run by hand (Actions > Build >
+# Run workflow) and it uploads the APK and the generated config/game.toml as artifacts.
 #
-# Secrets: XBE_KEY (the passphrase of ci/default.xbe.enc), KEYSTORE_BASE64 (the release .jks in base64),
-# KEYSTORE_PASSWORD, KEY_ALIAS and KEY_PASSWORD. Without the keystore the APK has a debug signature.
+# The recompiler needs assets/default.xbe. Commit it to the repository, or put a disc image in assets/*.iso: the
+# workflow extracts default.xbe from the first one it finds.
+#
+# Secrets (optional): KEYSTORE_BASE64 (the release .jks in base64), KEYSTORE_PASSWORD, KEY_ALIAS and KEY_PASSWORD.
+# Without the keystore the APK has a debug signature.
 name: Build
 
 on:
@@ -20,7 +21,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: windows-2025
+    runs-on: windows-latest
     timeout-minutes: 300
     env:
       NDK_VERSION: 28.2.13676358
@@ -42,25 +43,22 @@ jobs:
         shell: cmd
         run: call "%ANDROID_HOME%\cmdline-tools\latest\bin\sdkmanager.bat" --install "platforms;android-34" "ndk;%NDK_VERSION%" "cmake;%CMAKE_VERSION%" >nul
 
-      - name: Decrypt default.xbe
+      - name: Prepare default.xbe
         shell: bash
-        env:
-          XBE_KEY: ${{ secrets.XBE_KEY }}
         run: |
-          if [ -z "$XBE_KEY" ]; then echo "::error::The XBE_KEY secret is missing"; exit 1; fi
-          if [ ! -f ci/default.xbe.enc ]; then echo "::error::ci/default.xbe.enc is missing"; exit 1; fi
+          set -euo pipefail
           mkdir -p assets
-          # through a file: Git Bash rewrites an environment value that looks like a path (the key may start with /)
-          # before a Windows program such as openssl sees it
-          key="$RUNNER_TEMP/xbe.key"
-          # no line ending: a key saved on Windows can carry a CR that the secret then keeps
-          printf '%s' "$XBE_KEY" | tr -d '\r\n' > "$key"
-          openssl enc -d -aes-256-cbc -md sha256 -pbkdf2 -iter 200000 -in ci/default.xbe.enc -out assets/default.xbe -pass "file:$key"
-          rm -f "$key"
-          # the one supported image: anything else recompiles to a broken game
-          sha=$(sha1sum assets/default.xbe | cut -d' ' -f1)
-          echo "default.xbe SHA-1 $sha"
-          if [ "$sha" != "20e283c44fdb6062a760e4732d765036bac18067" ]; then echo "::error::default.xbe is not the supported image"; exit 1; fi
+          if [ -f assets/default.xbe ]; then
+            echo "Using assets/default.xbe from the repository"
+            exit 0
+          fi
+          iso="$(find assets -maxdepth 1 -type f -iname '*.iso' -print -quit)"
+          if [ -z "$iso" ]; then
+            echo "::error::assets/default.xbe is missing and there is no assets/*.iso to extract it from"
+            exit 1
+          fi
+          echo "Extracting default.xbe from $iso"
+          python -I tools/xdvdfs.py "$iso" default.xbe assets/default.xbe
 
       - name: Release key
         shell: bash
@@ -89,24 +87,32 @@ jobs:
           echo "GRADLE_ARGS=-PversionCode=${{ github.run_number }} -PversionName=$name" >> "$GITHUB_ENV"
 
       - name: Build
-        shell: cmd
-        run: call build.bat
+        shell: bash
+        run: ./build.bat
+
+      - name: Upload config/game.toml
+        uses: actions/upload-artifact@v5
+        with:
+          name: CrashTwinsanity-${{ steps.version.outputs.name }}-game-toml
+          path: config/game.toml
+          if-no-files-found: error
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v5
+        with:
+          name: CrashTwinsanity-${{ steps.version.outputs.name }}-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
 
       - name: Name the APK
         shell: bash
-        run: mv app/build/outputs/apk/release/app-release.apk "ShaolinMonks-${{ steps.version.outputs.name }}.apk"
-
-      - uses: actions/upload-artifact@v5
-        with:
-          name: ShaolinMonks-${{ steps.version.outputs.name }}
-          path: ShaolinMonks-${{ steps.version.outputs.name }}.apk
-          if-no-files-found: error
+        run: mv app/build/outputs/apk/release/app-release.apk "CrashTwinsanity-${{ steps.version.outputs.name }}.apk"
 
       - name: Release notes
         if: env.RELEASE == 'true'
         shell: bash
         run: |
-          apk="ShaolinMonks-${{ steps.version.outputs.name }}.apk"
+          apk="CrashTwinsanity-${{ steps.version.outputs.name }}.apk"
           size=$(awk -v b="$(stat -c %s "$apk")" 'BEGIN { printf "%.1f MB", b / 1048576 }')
           sha=$(sha256sum "$apk" | cut -d' ' -f1)
           sed -e "s|{{VERSION}}|$GITHUB_REF_NAME|g" -e "s|{{TAG}}|$GITHUB_REF_NAME|g" -e "s|{{APK}}|$apk|g" \
@@ -125,7 +131,7 @@ jobs:
         if: env.RELEASE == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          name: Shaolin Monks for Android ${{ github.ref_name }}
+          name: Crash Twinsanity for Android ${{ github.ref_name }}
           body_path: ${{ runner.temp }}/release-notes.md
-          files: ShaolinMonks-${{ steps.version.outputs.name }}.apk
+          files: CrashTwinsanity-${{ steps.version.outputs.name }}.apk
           make_latest: true

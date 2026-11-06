@@ -1,9 +1,9 @@
-# Mortal Kombat: Shaolin Monks (original Xbox), statically recompiled, as an Android library: libmain.so, loaded by SDL's activity.
+# Crash Twinsanity (original Xbox), statically recompiled, as an Android library: libmain.so, loaded by SDL's activity.
 # The x86 code is recompiled on the PC first (build.bat): this build takes generated/game as it is, with the SDK's
 # portable runtime, the game's sources in src and the Android host in native.
 
 cmake_minimum_required(VERSION 3.22)
-project(shaolinmonks_android LANGUAGES C CXX)
+project(crashtwinsanity_android LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

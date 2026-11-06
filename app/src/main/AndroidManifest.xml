@@ -18,7 +18,7 @@
     <!-- the game's files in a folder of their own on the shared storage, when the player allows it -->
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <!-- Android 10, which has no all files access: the ShaolinMonks folder made and an imported image copied into it -->
+    <!-- Android 10, which has no all files access: the CrashTwinsanity folder made and an imported image copied into it -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 
     <application
@@ -34,7 +34,7 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
         <activity
-            android:name=".ShaolinMonksActivity"
+            android:name=".CrashTwinsanityActivity"
             android:label="@string/app_name"
             android:exported="true"
             android:screenOrientation="sensorLandscape"

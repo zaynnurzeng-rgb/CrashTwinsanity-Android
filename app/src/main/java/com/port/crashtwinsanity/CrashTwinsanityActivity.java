@@ -1,4 +1,4 @@
-package com.racas.shaolinmonks;
+package com.port.crashtwinsanity;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -30,13 +30,13 @@ import java.util.List;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLControllerManager;
 
-// SDL's activity running libmain.so. The game goes in the ShaolinMonks folder on the phone's storage
-// (/storage/emulated/0/ShaolinMonks) or at the top of an SD card. Reading it needs all files access, a special access Android grants on a settings page
+// SDL's activity running libmain.so. The game goes in the CrashTwinsanity folder on the phone's storage
+// (/storage/emulated/0/CrashTwinsanity) or at the top of an SD card. Reading it needs all files access, a special access Android grants on a settings page
 // of its own, never among the app's ordinary permissions. This asks for it and says where the game goes, each time
 // the app comes back without them; the game itself waits and starts as soon as it finds the files.
 // At launch it also asks GitHub for a newer release (UpdateChecker) and tells of it once nothing else is asked.
-public class ShaolinMonksActivity extends SDLActivity {
-    static final String SHARED = "ShaolinMonks";
+public class CrashTwinsanityActivity extends SDLActivity {
+    static final String SHARED = "CrashTwinsanity";
 
     private AlertDialog dialog;  // the one up, at most one at a time
     private boolean notNow;      // the player turned the access down this run
@@ -55,7 +55,7 @@ public class ShaolinMonksActivity extends SDLActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         for (View v : new View[] {mSurface, mLayout})
-            if (v != null) v.setOnCapturedPointerListener(ShaolinMonksActivity::onCapturedPointer);
+            if (v != null) v.setOnCapturedPointerListener(CrashTwinsanityActivity::onCapturedPointer);
         File own = getExternalFilesDir(null);
         if (own != null) new File(own, "assets").mkdirs();
         // every launch: a newer release is shown once nothing else is asked
@@ -300,7 +300,7 @@ public class ShaolinMonksActivity extends SDLActivity {
         tellWhereTheGameGoes();
     }
 
-    // the ShaolinMonks folder on each SD card or USB stick mounted, as native/game_files.cpp looks in them
+    // the CrashTwinsanity folder on each SD card or USB stick mounted, as native/game_files.cpp looks in them
     private List<File> cardFolders() {
         List<File> out = new ArrayList<>();
         if (!ALL_FILES_ACCESS) {
@@ -378,11 +378,11 @@ public class ShaolinMonksActivity extends SDLActivity {
     private void askAllFilesAccess() {
         dialog = new AlertDialog.Builder(this)
                 .setTitle("Storage access")
-                .setMessage("Shaolin Monks reads the game from the ShaolinMonks folder on your phone's storage:\n\n"
+                .setMessage("Crash Twinsanity reads the game from the CrashTwinsanity folder on your phone's storage:\n\n"
                         + "/storage/emulated/0/" + SHARED + "\n\n"
                         + (ALL_FILES_ACCESS
-                                ? "On the next screen turn on \"Allow access to manage all files\" for Shaolin Monks, then come back."
-                                : "Allow Shaolin Monks to access your storage on the next screen."))
+                                ? "On the next screen turn on \"Allow access to manage all files\" for Crash Twinsanity, then come back."
+                                : "Allow Crash Twinsanity to access your storage on the next screen."))
                 .setCancelable(false)
                 .setPositiveButton("Allow access", (d, w) -> openAccessSettings())
                 .setNegativeButton("Not now", (d, w) -> notNow = true)
@@ -394,9 +394,9 @@ public class ShaolinMonksActivity extends SDLActivity {
     private void tellWhereTheGameGoes() {
         dialog = new AlertDialog.Builder(this)
                 .setTitle("Game files")
-                .setMessage("Copy the game into the ShaolinMonks folder on your phone's storage:\n\n"
+                .setMessage("Copy the game into the CrashTwinsanity folder on your phone's storage:\n\n"
                         + "/storage/emulated/0/" + SHARED + "\n\n"
-                        + "or into a ShaolinMonks folder at the top of your SD card.\n\n"
+                        + "or into a CrashTwinsanity folder at the top of your SD card.\n\n"
                         + "Its disc image (.iso), or default.xbe with its folders. The game starts as soon as they "
                         + "are there.\n\n"
                         + "Or import the disc image from your Downloads, a cloud drive or a USB stick.")
@@ -406,7 +406,7 @@ public class ShaolinMonksActivity extends SDLActivity {
                 .show();
     }
 
-    // the disc image the player picks, copied where the game looks: the ShaolinMonks folder with all files access, else the
+    // the disc image the player picks, copied where the game looks: the CrashTwinsanity folder with all files access, else the
     // app's own assets folder, which needs none
     private void startImport() {
         importing = importer.pick();

@@ -319,8 +319,13 @@ void SkipCutscenes() {
 
 }  // namespace
 
+// Every address below belongs to Mortal Kombat: Shaolin Monks. Crash Twinsanity's have not been found yet, so the
+// code is kept for reference but not run: writing through the old addresses would touch unrelated memory.
+constexpr bool kAddressesKnown = false;
+
 // at every present, game thread
 void ApplyCheats() {
+    if (!kAddressesKnown) return;
     ApplyUnlocks();
     if (Opt().max_health) MaxHealth();
     if (Opt().god_mode) FullHealth();

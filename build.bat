@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set "GAME_TITLE=Mortal Kombat Shaolin Monks"
+set "GAME_TITLE=Crash Twinsanity"
 set "GAME_XBE=default.xbe"
 title %GAME_TITLE% - Build
 cd /d "%~dp0"

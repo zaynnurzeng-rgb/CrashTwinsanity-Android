@@ -1,28 +1,24 @@
-# Mortal Kombat: Shaolin Monks for Android
-An unofficial native Android port of the original Xbox version of *Mortal Kombat: Shaolin Monks*, with touch controls, controller and keyboard support and extended graphics options.
+# Crash Twinsanity for Android
+An unofficial native Android port of the original Xbox version of *Crash Twinsanity* (title `56550026`), with touch controls, controller and keyboard support and extended graphics options.
 
 The game's x86 code is statically recompiled ahead of time to C++ with [XboxXBE-Recomp](https://github.com/TGP482/XboxXBE-Recomp), then built for arm64. Drawing goes through Vulkan, and windowing, input and audio through SDL3. No emulator is involved. The Android host (Vulkan renderer, DirectSound, touch controls, settings panel) comes from [Black-Android](https://github.com/RanggaCasper/Black-Android).
-
-[![Gameplay on a Xiaomi Pad 7 at 60 FPS](https://img.youtube.com/vi/_NjKztafI74/maxresdefault.jpg)](https://youtu.be/_NjKztafI74)
-
-*Gameplay on a Xiaomi Pad 7 at 60 FPS ([watch on YouTube](https://youtu.be/_NjKztafI74)).*
 
 > [!NOTE]
 > This project does not include any game assets. You must provide the files from your own legally acquired copy of the game to install or build.
 
 > [!WARNING]
-> Work in progress. The port builds, but it has not been played through on a device yet. See [Status](#status).
+> Work in progress. The port builds, but Crash Twinsanity has not been played through on a device yet. See [Status](#status).
 
 ## Installation
 1. Install the APK.
-2. Open **Shaolin Monks** and allow **all files access** when it asks (on Android 10, the **storage** permission).
-3. Copy the game into `/storage/emulated/0/ShaolinMonks`, or into a `ShaolinMonks` folder at the top of your SD card: either the disc image (`.iso`) or `default.xbe` with the rest of the disc's files and folders (`GAMEDATA.WA*`, `front`, `English`, `classic`, ...). The app creates the folder on the phone's storage once access is allowed, and starts the game as soon as it finds the files.
+2. Open **Crash Twinsanity** and allow **all files access** when it asks (on Android 10, the **storage** permission).
+3. Copy the game into `/storage/emulated/0/CrashTwinsanity`, or into a `CrashTwinsanity` folder at the top of your SD card: either the disc image (`.iso`) or `default.xbe` with the rest of the disc's files and folders. The app creates the folder on the phone's storage once access is allowed, and starts the game as soon as it finds the files.
 
-If you don't grant that access, `Android/data/com.racas.shaolinmonks/files/assets` works too.
+If you don't grant that access, `Android/data/com.port.crashtwinsanity/files/assets` works too.
 
-Settings (`shaolinmonks.toml`, `android.toml`, `layout.toml`), saves (`hdd`), logs and the shader cache are stored in `Android/data/com.racas.shaolinmonks/files`.
+Settings (`twinsanity.toml`, `android.toml`, `layout.toml`), saves (`hdd`), logs and the shader cache are stored in `Android/data/com.port.crashtwinsanity/files`.
 
-The disc is the same for the USA and Europe releases (one `default.xbe`, SHA-1 `20e283c44fdb6062a760e4732d765036bac18067`).
+The build records the SHA-1 of the `default.xbe` it recompiled and warns about a different image. When `kImageSha1` is empty, the host accepts any `default.xbe` or ISO without that check.
 
 ## Features
 The settings panel opens from the gear at the top left of the screen (or F10 on a keyboard). Android's back button is the controller's Start, which pauses the game.
@@ -49,11 +45,11 @@ A full Xbox controller on the screen:
 - **Background Pause**: the game and its sound pause while the app is in the background.
 
 ## Status
-- `xbe_symbols` finds 183 of the 238 XDK functions and 11 of the 12 data symbols the host knows; the ones it misses are the network stack (XNet, Winsock), Bink and the memory unit type, which the game doesn't use. Four more were resolved by hand in `config/game.toml`.
-- **MK II and the bonus demo don't run.** The game plays the unlockable *Mortal Kombat II* by starting another program on the disc, `jarvos.xbe` (Midway's arcade emulator), and *The Suffering: Ties That Bind* demo with `Suffering2_Gold.xbe`. The Android host can't switch to another executable yet, so picking either one closes the app.
-- Nothing game-specific is patched yet: no widescreen FOV, frame rate unlock or cheats. The game runs at its own frame rate and 4:3 picture, letterboxed.
+- The recompiler now targets Crash Twinsanity (`56550026`). `build.bat` runs `xbe_symbols` against `assets/default.xbe` and writes the symbol table into `config/game.toml` before recompiling.
+- No game hooks are installed: the Shaolin Monks `FrameSkip` (0x0CB800) and `WidenAspect` (0x12432E) hooks were tied to another image and have been removed.
+- Game-specific patches for Crash Twinsanity (widescreen, frame pacing, cheats) are not implemented yet.
 
-Logs are in `Android/data/com.racas.shaolinmonks/files`. Please include the log when reporting a problem.
+Logs are in `Android/data/com.port.crashtwinsanity/files`. Please include the log when reporting a problem.
 
 ## System Requirements
 - **Android** 10 or newer, arm64.
@@ -67,7 +63,7 @@ Building requires a Windows PC.
 ### 1. Clone this repository
 
 ### 2. Add the game files
-Put `default.xbe` in `assets/`, or put the disc image (`.iso`) in `assets/` or `iso/`. The build extracts `default.xbe` from the image.
+Put `default.xbe` in `assets/` (it can be committed for CI), or put the disc image (`.iso`) in `assets/` or `iso/`. The build extracts `default.xbe` from the image.
 
 ### 3. Install the dependencies
 - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) with *Desktop development with C++*. The recompiler runs on the PC.
@@ -94,4 +90,4 @@ If you'd like to support the project, you can do so on [SociaBuzz](https://socia
 - [SDL](https://github.com/libsdl-org/SDL), [glslang](https://github.com/KhronosGroup/glslang), [toml++](https://github.com/marzer/tomlplusplus) and [Dear ImGui](https://github.com/ocornut/imgui).
 - [xemu](https://github.com/xemu-project/xemu) and [Cxbx-Reloaded](https://github.com/Cxbx-Reloaded/Cxbx-Reloaded), which XboxXBE-Recomp used as references for Xbox hardware and API behavior.
 
-*Mortal Kombat* is a trademark of Warner Bros. Entertainment Inc. This project is not affiliated with or endorsed by them.
+*Crash Bandicoot* and *Crash Twinsanity* are trademarks of their respective owners. This project is not affiliated with or endorsed by them.

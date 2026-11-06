@@ -1,6 +1,6 @@
-// The game on Android: its files or a disc image (.iso) in the ShaolinMonks folder on the phone's storage or on an SD
-// card (all files access granted) or in the app's own assets folder. The xbe must be the one this build was recompiled
-// from: the disc's USA and Europe releases share it.
+// The game on Android: its files or a disc image (.iso) in the CrashTwinsanity folder on the phone's storage or on an
+// SD card (all files access granted) or in the app's own assets folder. The xbe is checked against the one this build
+// was recompiled from when CMake recorded a SHA-1; an empty kImageSha1 accepts the image as it is.
 #include <jni.h>
 
 #include <SDL3/SDL.h>
@@ -26,10 +26,10 @@ namespace fs = std::filesystem;
 
 // the shared storage's folder for the game, readable with all files access: the files or the image in it, or in its
 // assets folder
-constexpr const char* kShared = "/storage/emulated/0/ShaolinMonks";
+constexpr const char* kShared = "/storage/emulated/0/CrashTwinsanity";
 constexpr const char* kVolumes = "/storage";
 
-// the ShaolinMonks folders ShaolinMonksActivity has from Android's storage volumes, which some phones don't show in
+// the CrashTwinsanity folders the activity has from Android's storage volumes, which some phones don't show in
 // /storage
 std::vector<fs::path> ActivityCardFolders() {
     std::vector<fs::path> out;
@@ -59,8 +59,8 @@ std::vector<fs::path> ActivityCardFolders() {
     return out;
 }
 
-// the ShaolinMonks folder on each SD card or USB stick Android has mounted, /storage/<volume id>/ShaolinMonks; all
-// files access reads them as it does the phone's own storage
+// the CrashTwinsanity folder on each SD card or USB stick Android has mounted, /storage/<volume id>/CrashTwinsanity;
+// all files access reads them as it does the phone's own storage
 std::vector<fs::path> RemovableFolders() {
     std::vector<fs::path> out = ActivityCardFolders();
     // an entry's own error apart from the listing's: one that is no folder must not end the walk
@@ -68,7 +68,7 @@ std::vector<fs::path> RemovableFolders() {
     for (auto& e : fs::directory_iterator(kVolumes, ec)) {
         std::string name = e.path().filename().string();
         if (name == "emulated" || name == "self" || !e.is_directory(dir_ec)) continue;
-        out.push_back(e.path() / "ShaolinMonks");
+        out.push_back(e.path() / "CrashTwinsanity");
     }
     static bool logged = false;
     if (ec && !logged) {
@@ -199,7 +199,9 @@ int Search(GameFiles& game) {
     auto consider = [&](const fs::path& assets, const fs::path& name, std::vector<uint8_t> xbe,
                         std::unique_ptr<kernel::Disc> disc) {
         std::string sha = Sha1(xbe);
-        bool match = sha == kImageSha1;
+        // an empty kImageSha1 means the build did not record a reference image: accept any default.xbe or ISO then
+        const char* expected = kImageSha1;
+        bool match = !expected || !*expected || sha == expected;
         LOGR("Game: %s in %s, sha1 %s%s", IMAGE_XBE, name.string().c_str(), sha.c_str(),
              match ? "" : ", another release");
         if (match) {

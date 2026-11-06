@@ -1,4 +1,4 @@
-package com.racas.shaolinmonks;
+package com.port.crashtwinsanity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 // any .iso there every second and would open a half written one.
 final class GameImporter {
     static final int REQUEST = 0x8A11;
-    private static final String TAG = "ShaolinMonksImport";
+    private static final String TAG = "TwinsanityImport";
     private static final byte[] MAGIC = "MICROSOFT*XBOX*MEDIA".getBytes();
     // where the volume descriptor sits: the game partition alone, redump, XGD3, XGD1 video offsets
     private static final long[] PARTITIONS = {0, 0x18300000L, 0xFD90000L, 0x2080000L};

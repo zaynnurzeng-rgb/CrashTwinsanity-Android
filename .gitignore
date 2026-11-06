@@ -17,13 +17,12 @@
 # recompiled code, derived from the game
 /generated/
 
-# user's own game files
-/assets/
+# user's own game files; assets/default.xbe is committed for the CI build
 /iso/
 /extracted/
 
 # runtime files
-shaolinmonks.toml
+twinsanity.toml
 /logs/
 /hdd/
 /CrashDumps/

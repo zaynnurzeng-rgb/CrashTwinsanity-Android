@@ -151,7 +151,7 @@ toml::table Table() {
 // a phone renders the console's frame at about 720p unless the settings say otherwise
 constexpr uint32_t kFirstRunRenderPercent = 67;
 
-// Shaolin Monks steps its menus, their key repeat and its films once a frame: they run as on the console at 60
+// the game steps its menus, their key repeat and its films once a frame: they run as on the console at 60
 void PhoneFrameDefaults(Settings& s) {
     s.fps_cap = 60;
     s.vsync = false;

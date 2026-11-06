@@ -1,4 +1,4 @@
-// The options menu's update check: ShaolinMonksActivity asks GitHub and shows the answer in a dialog of its own
+// The options menu's update check: CrashTwinsanityActivity asks GitHub and shows the answer in a dialog of its own
 #include <jni.h>
 
 #include <SDL3/SDL.h>

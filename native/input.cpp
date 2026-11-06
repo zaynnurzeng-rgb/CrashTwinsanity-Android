@@ -284,7 +284,7 @@ void Read(SDL_Gamepad* pad, Pad& p) {
 
 // A controller Android hands over without its device: some phones' game services (MIUI's on a Redmi Note 8 Pro)
 // take a DualShock 4 and pass its buttons and sticks on as a virtual device, which SDL takes for no controller.
-// ShaolinMonksActivity sends those here as Android's key codes and axes; they play port 0.
+// CrashTwinsanityActivity sends those here as Android's key codes and axes; they play port 0.
 constexpr int kLooseCodes = 512;  // Android's key codes held, the controller's all under 320
 struct Loose {
     std::bitset<kLooseCodes> keys;
@@ -362,8 +362,8 @@ void MergeLoose(Pad& p, const PadBinds& binds) {
 
 }  // namespace
 
-// ShaolinMonksActivity: the loose controller's buttons, sticks and triggers, and its letting go when the app loses the focus
-extern "C" JNIEXPORT void JNICALL Java_com_racas_shaolinmonks_ShaolinMonksActivity_nativeLooseKey(JNIEnv*, jclass, jint code,
+// CrashTwinsanityActivity: the loose controller's buttons, sticks and triggers, and its letting go when the app loses the focus
+extern "C" JNIEXPORT void JNICALL Java_com_port_crashtwinsanity_CrashTwinsanityActivity_nativeLooseKey(JNIEnv*, jclass, jint code,
                                                                                      jboolean down) {
     // every button kept, a generic controller's BUTTON_1 to 16 too: the CONTROLLER page can bind them
     if (code < 0 || code >= kLooseCodes) return;
@@ -372,7 +372,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_racas_shaolinmonks_ShaolinMonksActivi
     g_loose.keys[size_t(code)] = down;
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_racas_shaolinmonks_ShaolinMonksActivity_nativeLooseAxes(JNIEnv*, jclass, jfloat lx,
+extern "C" JNIEXPORT void JNICALL Java_com_port_crashtwinsanity_CrashTwinsanityActivity_nativeLooseAxes(JNIEnv*, jclass, jfloat lx,
                                                                                       jfloat ly, jfloat rx, jfloat ry,
                                                                                       jfloat lt, jfloat rt, jfloat hx,
                                                                                       jfloat hy) {
@@ -382,7 +382,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_racas_shaolinmonks_ShaolinMonksActivi
     g_loose.lt = lt, g_loose.rt = rt, g_loose.hx = hx, g_loose.hy = hy;
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_racas_shaolinmonks_ShaolinMonksActivity_nativeLooseRelease(JNIEnv*, jclass) {
+extern "C" JNIEXPORT void JNICALL Java_com_port_crashtwinsanity_CrashTwinsanityActivity_nativeLooseRelease(JNIEnv*, jclass) {
     std::lock_guard lock(g_loose_lock);
     bool seen = g_loose.seen;
     g_loose = {};

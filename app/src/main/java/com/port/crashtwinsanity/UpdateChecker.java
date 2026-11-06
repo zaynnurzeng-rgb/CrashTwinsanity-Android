@@ -1,4 +1,4 @@
-package com.racas.shaolinmonks;
+package com.port.crashtwinsanity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,9 +21,9 @@ import org.json.JSONObject;
 // given whatever it is.
 final class UpdateChecker {
     // owner/name of the GitHub repository that publishes this port's releases; empty asks nothing
-    static final String REPO = "RanggaCasper/ShaolinMonks-Android";
+    static final String REPO = "";
     private static final String LATEST = "https://api.github.com/repos/" + REPO + "/releases/latest";
-    private static final String TAG = "ShaolinMonksUpdate";
+    private static final String TAG = "TwinsanityUpdate";
     private static final int TIMEOUT_MS = 8000;
 
     private static final String PREFS = "updates";
@@ -31,7 +31,7 @@ final class UpdateChecker {
 
     static final class Release {
         String tag;      // v1.2.3
-        String name;     // Shaolin Monks for Android v1.2.3
+        String name;     // Crash Twinsanity for Android v1.2.3
         String page;     // the release on GitHub
         String apk;      // the APK's download, or null
         String changes;  // the "What's Changed" list as plain text, or ""
@@ -89,7 +89,7 @@ final class UpdateChecker {
         c.setConnectTimeout(TIMEOUT_MS);
         c.setReadTimeout(TIMEOUT_MS);
         c.setRequestProperty("Accept", "application/vnd.github+json");
-        c.setRequestProperty("User-Agent", "ShaolinMonks-Android");
+        c.setRequestProperty("User-Agent", "CrashTwinsanity-Android");
         try {
             if (c.getResponseCode() != 200) return null;  // 404 when there is no release yet
             JSONObject j = new JSONObject(read(c.getInputStream()));
